@@ -144,7 +144,15 @@ public class Main {
                             int getOtp = read.nextInt();
                             if(getOtp==b){
                                 //Update Password option
+                                String newpass;
                                 System.out.println("You may update your password");
+                                System.out.println("Enter your new password:");
+                                newpass=read.nextLine();
+                                CallableStatement stmt=con.prepareCall("{call update_mpassword(?,?)}");
+                                stmt.setString(1,recipient);
+                                stmt.setString(2,newpass);
+                                stmt.execute();
+                                System.out.println("Password Updated");
                             }
                             else{
                                 System.out.println("Wrong Otp");
@@ -163,11 +171,16 @@ public class Main {
                 }
                 else{
                     System.out.println("Please choose a option:");
+                    System.out.println("0. Show Profile");
                     System.out.println("1. Update Profile Settings.");
                     System.out.println("2. Add/Update Password");
                     System.out.println("3. Show Passwords");
                     System.out.println("4. Logout");
                     choice = read.nextInt();
+                    if(choice==0)
+                    {
+                        
+                    }
                     if(choice == 1){
                         while(true){
                             System.out.println("Please choose a option: ");
@@ -176,8 +189,7 @@ public class Main {
                             System.out.println("3. Update DOB");
                             System.out.println("4. Update Gender");
                             System.out.println("5. Update Address");
-                            System.out.println("6. Display Profile");
-                            System.out.println("7. Go back.");
+                            System.out.println("6. Go back.");
                             choice = read.nextInt();
                             if(choice==1){
                                 String fname,lname;
@@ -274,10 +286,6 @@ public class Main {
                                 stmt.setString(6,Country);
                                 stmt.execute();
                                 System.out.println("Address Updated Successfully.");
-                            }
-                            else if(choice==6)
-                            {
-                                
                             }
                             else{
                                 break;
