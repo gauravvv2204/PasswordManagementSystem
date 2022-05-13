@@ -146,13 +146,24 @@ public class Main {
                                 //Update Password option
                                 String newpass;
                                 System.out.println("You may update your password");
-                                System.out.println("Enter your new password:");
-                                newpass=read.nextLine();
-                                CallableStatement stmt=con.prepareCall("{call update_mpassword(?,?)}");
-                                stmt.setString(1,recipient);
-                                stmt.setString(2,newpass);
-                                stmt.execute();
-                                System.out.println("Password Updated");
+                                while(true){
+                                    System.out.println("Enter your new password:");
+                                    newpass=read.nextLine();
+                                    CallableStatement stmt1=con.prepareCall("{call update_mpassword(?,?,?)}");
+                                    stmt1.setString(1,recipient);
+                                    stmt1.setString(2,newpass);
+                                    stmt1.registerOutParameter(3, Types.VARCHAR);
+                                    stmt1.execute();
+                                    String result = stmt1.getString(3);
+                                    if(result.equals("FALSE")){
+                                        System.out.println("Password should consist of alphabets,numbers,special charaters and should have a length greater than or equal to 8");
+                                        continue;
+                                    }
+                                    else{
+                                        System.out.println("Password Updated");
+                                        break;
+                                    }
+                                }
                             }
                             else{
                                 System.out.println("Wrong Otp");
@@ -179,7 +190,7 @@ public class Main {
                     choice = read.nextInt();
                     if(choice==0)
                     {
-                        
+
                     }
                     if(choice == 1){
                         while(true){
