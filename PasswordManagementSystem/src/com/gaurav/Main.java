@@ -176,7 +176,8 @@ public class Main {
                             System.out.println("3. Update DOB");
                             System.out.println("4. Update Gender");
                             System.out.println("5. Update Address");
-                            System.out.println("6. Go back.");
+                            System.out.println("6. Display Profile");
+                            System.out.println("7. Go back.");
                             choice = read.nextInt();
                             if(choice==1){
                                 String fname,lname;
@@ -274,6 +275,10 @@ public class Main {
                                 stmt.execute();
                                 System.out.println("Address Updated Successfully.");
                             }
+                            else if(choice==6)
+                            {
+                                
+                            }
                             else{
                                 break;
                             }
@@ -282,7 +287,7 @@ public class Main {
                     else if(choice==2){
 
                     }
-                    else if(choice==2){
+                    else if(choice==3){
 
                     }
                     else{
