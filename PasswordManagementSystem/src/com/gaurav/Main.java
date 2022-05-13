@@ -84,17 +84,17 @@ public class Main {
                     else if(choice == 3){
                         System.out.println("Please enter your email address");
                         String recipient = read.nextLine();
-                        CallableStatement stmt=con.prepareCall("{call isPresent(?,?)}");
-                        stmt.setString(1,recipient);
-                        stmt.registerOutParameter(2, Types.VARCHAR);
-                        stmt.execute();
-                        String result = stmt.getString(2);
+                        CallableStatement stmt1=con.prepareCall("{call isPresent(?,?)}");
+                        stmt1.setString(1,recipient);
+                        stmt1.registerOutParameter(2, Types.VARCHAR);
+                        stmt1.execute();
+                        String result = stmt1.getString(2);
                         if(result.equals("FALSE")){
                             System.out.println("Email doesn't exist");
                             continue;
                         }
                         // email ID of  Sender.
-                        String sender = "gauravpahwa2204@gmail.com";
+                        String sender = "passmanagerdbmsproject@gmail.com";
 
                         // using host as localhost
                         String host = "smtp.gmail.com";
@@ -113,7 +113,7 @@ public class Main {
 
                             protected PasswordAuthentication getPasswordAuthentication() {
 
-                                return new PasswordAuthentication("gpahwa_be20@thapar.edu", "uwkuqojabdamywff");
+                                return new PasswordAuthentication("passmanagerdbmsproject@gmail.com", "hello@123");
 
                             }
 
@@ -137,7 +137,7 @@ public class Main {
                             int max = 999999;
                             int min = 100000;
                             int b = (int)(Math.random()*(max-min+1)+min);
-                            message.setText("Your otp is: "+b);
+                            message.setText("Your OTP is: "+b);
                             // Send email.
                             Transport.send(message);
                             System.out.println("Mail successfully sent");
@@ -149,13 +149,13 @@ public class Main {
                                 while(true){
                                     System.out.println("Enter your new password:");
                                     newpass=read.nextLine();
-                                    CallableStatement stmt1=con.prepareCall("{call update_mpassword(?,?,?)}");
-                                    stmt1.setString(1,recipient);
-                                    stmt1.setString(2,newpass);
-                                    stmt1.registerOutParameter(3, Types.VARCHAR);
-                                    stmt1.execute();
-                                    String result = stmt1.getString(3);
-                                    if(result.equals("FALSE")){
+                                    CallableStatement stmt=con.prepareCall("{call update_mpassword(?,?,?)}");
+                                    stmt.setString(1,recipient);
+                                    stmt.setString(2,newpass);
+                                    stmt.registerOutParameter(3, Types.VARCHAR);
+                                    stmt.execute();
+                                    String result1 = stmt.getString(3);
+                                    if(result1.equals("FALSE")){
                                         System.out.println("Password should consist of alphabets,numbers,special charaters and should have a length greater than or equal to 8");
                                         continue;
                                     }
@@ -369,6 +369,4 @@ public class Main {
         }
     }
 }
-
-
 
