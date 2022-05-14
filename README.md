@@ -14,5 +14,7 @@ We have used a package for SHA256 which can be found [here](https://github.com/C
 
 
 This project was made by
+
 ~ Gaurav Pahwa and Kunal Demla
+
 (For Final Database Managment Project)
