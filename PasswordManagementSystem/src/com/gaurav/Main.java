@@ -7,14 +7,10 @@ import java.sql.*;
 import java.util.*;
 import javax.mail.*;
 import javax.mail.internet.*;
-import javax.activation.*;
 import javax.mail.Session;
 import javax.mail.Transport;
-import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.math.BigInteger;
-import java.security.SecureRandom;
-import java.util.Random;
 
 public class Main {
 
@@ -26,11 +22,6 @@ public class Main {
             Class.forName("oracle.jdbc.driver.OracleDriver");
             Connection con = DriverManager.getConnection(
                     "jdbc:oracle:thin:@172.16.64.222:1522/ORCLPDB", "CS2003087", "GAURAV");
-            // Statement stmt=con.createStatement();
-            // ResultSet rs=stmt.executeQuery("select * from MASTER_TABLE");
-            // while(rs.next())
-            // System.out.println(rs.getInt(1)+" "+rs.getString(2)+" "+rs.getString(3));
-            // con.close();
             while (true) {
                 if (logged_in_id == -1) {
                     System.out.println("Please choose a option:");
@@ -313,7 +304,6 @@ public class Main {
                         stmt.registerOutParameter(4,Types.VARCHAR);
                         stmt.execute();
                         BigInteger pubk=new BigInteger(stmt.getString(2));
-//                        BigInteger prik=new BigInteger(stmt.getString(3));
                         BigInteger modu=new BigInteger(stmt.getString(4));
                         BigInteger encryptedpassword=encrypt(password,pubk,modu);
                         if(choice==1)
@@ -359,7 +349,6 @@ public class Main {
                         stmt.registerOutParameter(3,Types.VARCHAR);
                         stmt.registerOutParameter(4,Types.VARCHAR);
                         stmt.execute();
-//                        BigInteger pubk=new BigInteger(stmt.getString(2));
                         BigInteger prik=new BigInteger(stmt.getString(3));
                         BigInteger modu=new BigInteger(stmt.getString(4));
                         if(choice==1) {
@@ -494,38 +483,3 @@ public class Main {
     }
 }
 
-class RSA {
-    private BigInteger P;
-    private BigInteger Q;
-    private BigInteger N;
-    private BigInteger PHI;
-    private BigInteger e;
-    private BigInteger d;
-    private int maxLength = 1024;
-    private Random R;
-
-    public RSA() {
-        R = new Random();
-        P = BigInteger.probablePrime(maxLength, R);
-        Q = BigInteger.probablePrime(maxLength, R);
-        N = P.multiply(Q);
-        PHI = P.subtract(BigInteger.ONE).multiply(Q.subtract(BigInteger.ONE));
-        e = BigInteger.probablePrime(maxLength / 2, R);
-        while (PHI.gcd(e).compareTo(BigInteger.ONE) > 0 && e.compareTo(PHI) < 0) {
-            e.add(BigInteger.ONE);
-        }
-        d = e.modInverse(PHI);
-    }
-
-    public BigInteger getpublickey() {
-        return e;
-    }
-
-    public BigInteger getprivatekey() {
-        return d;
-    }
-
-    public BigInteger getmodulus() {
-        return N;
-    }
-}
