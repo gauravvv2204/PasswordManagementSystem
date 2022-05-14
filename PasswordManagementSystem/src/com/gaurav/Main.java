@@ -94,7 +94,7 @@ public class Main {
                             continue;
                         }
                         // email ID of  Sender.
-                        String sender = "passmanagerdbmsproject@gmail.com";
+                        String sender = "gauravpahwa2204@gmail.com";
 
                         // using host as localhost
                         String host = "smtp.gmail.com";
@@ -137,7 +137,7 @@ public class Main {
                             int max = 999999;
                             int min = 100000;
                             int b = (int)(Math.random()*(max-min+1)+min);
-                            message.setText("Your OTP is: "+b);
+                            message.setText("Your otp is: "+b);
                             // Send email.
                             Transport.send(message);
                             System.out.println("Mail successfully sent");
@@ -190,9 +190,17 @@ public class Main {
                     choice = read.nextInt();
                     if(choice==0)
                     {
-
+                        Statement stmt=con.createStatement();
+                        ResultSet rs = stmt.executeQuery("SELECT * FROM user_details where u_id="+logged_in_id);
+                        DBTablePrinter.printResultSet(rs);
+                        CallableStatement callstmt = con.prepareCall("{call getMobileNo(?,?)}");
+                        callstmt.setInt(1,logged_in_id);
+                        callstmt.registerOutParameter(2,Types.REF_CURSOR);
+                        callstmt.execute();
+                        System.out.println("You have following mobile numbers associated with you.");
+                        DBTablePrinter.printResultSet((ResultSet) callstmt.getObject(2));
                     }
-                    if(choice == 1){
+                    else if(choice == 1){
                         while(true){
                             System.out.println("Please choose a option: ");
                             System.out.println("1. Update Name");
@@ -369,4 +377,5 @@ public class Main {
         }
     }
 }
+
 
