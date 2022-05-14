@@ -2,7 +2,6 @@ package com.gaurav;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.*;
 import javax.mail.*;
@@ -14,6 +13,7 @@ import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.math.BigInteger;
 import java.security.SecureRandom;
+import java.util.Random;
 
 public class Main {
 
@@ -289,7 +289,12 @@ public class Main {
                             }
                         }
                     } else if (choice == 2) {
-
+                        RSA helper = new RSA();
+                        String password = read.nextLine();
+                        BigInteger test = encrypt(password, helper.getpublickey(), helper.getmodulus());
+                        System.out.println(test);
+                        String ans = decrypt(test, helper.getprivatekey(), helper.getmodulus());
+                        System.out.println(ans);
                     } else if (choice == 3) {
 
                     } else {
@@ -349,13 +354,13 @@ public class Main {
         }
     }
 
-    BigInteger encrypt(String s, BigInteger publicKey, BigInteger modulus) {
+    static BigInteger encrypt(String s, BigInteger publicKey, BigInteger modulus) {
         byte[] bytes = s.getBytes();
         BigInteger message = new BigInteger(bytes);
         return message.modPow(publicKey, modulus);
     }
 
-    String decrypt(BigInteger encrypted, BigInteger privateKey, BigInteger modulus) {
+    static String decrypt(BigInteger encrypted, BigInteger privateKey, BigInteger modulus) {
         BigInteger storage = encrypted.modPow(privateKey, modulus);
         byte[] bytes = storage.toByteArray();
         String ans = new String(bytes);
@@ -364,33 +369,37 @@ public class Main {
 }
 
 public class RSA {
-    private final static BigInteger one = new BigInteger("1");
-    private final static SecureRandom random = new SecureRandom();
+    private BigInteger P;
+    private BigInteger Q;
+    private BigInteger N;
+    private BigInteger PHI;
+    private BigInteger e;
+    private BigInteger d;
+    private int maxLength = 1024;
+    private Random R;
 
-    private BigInteger privateKey;
-    private BigInteger publicKey;
-    private BigInteger modulus;
-
-    // generate an N-bit (roughly) public and private key
-    RSA(int N) {
-        BigInteger p = BigInteger.probablePrime(N / 2, random);
-        BigInteger q = BigInteger.probablePrime(N / 2, random);
-        BigInteger phi = (p.subtract(one)).multiply(q.subtract(one));
-
-        modulus = p.multiply(q);
-        publicKey = new BigInteger("65537"); // common value in practice = 2^16 + 1
-        privateKey = publicKey.modInverse(phi);
+    public RSA() {
+        R = new Random();
+        P = BigInteger.probablePrime(maxLength, R);
+        Q = BigInteger.probablePrime(maxLength, R);
+        N = P.multiply(Q);
+        PHI = P.subtract(BigInteger.ONE).multiply(Q.subtract(BigInteger.ONE));
+        e = BigInteger.probablePrime(maxLength / 2, R);
+        while (PHI.gcd(e).compareTo(BigInteger.ONE) > 0 && e.compareTo(PHI) < 0) {
+            e.add(BigInteger.ONE);
+        }
+        d = e.modInverse(PHI);
     }
 
     public BigInteger getpublickey() {
-        return publicKey;
+        return e;
     }
 
     public BigInteger getprivatekey() {
-        return privateKey;
+        return d;
     }
 
     public BigInteger getmodulus() {
-        return modulus;
+        return N;
     }
 }
