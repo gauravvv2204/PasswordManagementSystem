@@ -2,6 +2,7 @@ package com.gaurav;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.sql.*;
 import java.util.*;
 import javax.mail.*;
@@ -52,6 +53,13 @@ public class Main {
                         int reply = stmt.getInt(1);
                         if (reply == 1) {
                             System.out.println("User created Successfully");
+                            RSA helper = new RSA();
+                            CallableStatement stmt1 = con.prepareCall("{call insert_rsa(?,?,?,?)}");
+                            stmt1.setString(1,email);
+                            stmt1.setString(2,helper.getpublickey().toString());
+                            stmt1.setString(3,helper.getprivatekey().toString());
+                            stmt1.setString(4,helper.getmodulus().toString());
+                            stmt1.execute();
                         } else if (reply == -1) {
                             System.out.println("Account already exists.Log in or Please use different emaiiId.");
                         } else if (reply == -2) {
@@ -289,14 +297,132 @@ public class Main {
                             }
                         }
                     } else if (choice == 2) {
-                        RSA helper = new RSA();
-                        String password = read.nextLine();
-                        BigInteger test = encrypt(password, helper.getpublickey(), helper.getmodulus());
-                        System.out.println(test);
-                        String ans = decrypt(test, helper.getprivatekey(), helper.getmodulus());
-                        System.out.println(ans);
-                    } else if (choice == 3) {
+                        System.out.println("What platform do you want to add?");
+                        System.out.println("1. Instagram");
+                        System.out.println("2. Gmail");
+                        System.out.println("3. Github");
+                        choice=read.nextInt();
+                        System.out.println("Please enter your username");
+                        String username=read.nextLine();
+                        System.out.println("Please enter your password");
+                        String password=read.nextLine();
+                        CallableStatement stmt = con.prepareCall("{call get_rsa_keys(?,?,?,?)}");
+                        stmt.setInt(1,logged_in_id);
+                        stmt.registerOutParameter(2,Types.VARCHAR);
+                        stmt.registerOutParameter(3,Types.VARCHAR);
+                        stmt.registerOutParameter(4,Types.VARCHAR);
+                        stmt.execute();
+                        BigInteger pubk=new BigInteger(stmt.getString(2));
+//                        BigInteger prik=new BigInteger(stmt.getString(3));
+                        BigInteger modu=new BigInteger(stmt.getString(4));
+                        BigInteger encryptedpassword=encrypt(password,pubk,modu);
+                        if(choice==1)
+                        {
+                            stmt = con.prepareCall("{call insert_insta(?,?,?)}");
+                            stmt.setInt(1,logged_in_id);
+                            stmt.setString(2,username);
+                            stmt.setString(3,encryptedpassword.toString());
+                            stmt.execute();
+                        }
+                        else if(choice==2)
+                        {
+                            stmt = con.prepareCall("{call insert_gmail(?,?,?)}");
+                            stmt.setInt(1,logged_in_id);
+                            stmt.setString(2,username);
+                            stmt.setString(3,encryptedpassword.toString());
+                            stmt.execute();
+                        }
+                        else if(choice==3)
+                        {
+                            stmt = con.prepareCall("{call insert_github(?,?,?)}");
+                            stmt.setInt(1,logged_in_id);
+                            stmt.setString(2,username);
+                            stmt.setString(3,encryptedpassword.toString());
+                            stmt.execute();
+                        }
+                        else
+                        {
+                            System.out.println("Dumb");
+                        }
+                        if(choice<4&&choice>0)
+                            System.out.println("Update Success!");
 
+                    } else if (choice == 3) {
+                        System.out.println("Which platform's accounts do you want to see?");
+                        System.out.println("1. Instagram");
+                        System.out.println("2. Gmail");
+                        System.out.println("3. Github");
+                        choice = read.nextInt();
+                        CallableStatement stmt = con.prepareCall("{call get_rsa_keys(?,?,?,?)}");
+                        stmt.setInt(1,logged_in_id);
+                        stmt.registerOutParameter(2,Types.VARCHAR);
+                        stmt.registerOutParameter(3,Types.VARCHAR);
+                        stmt.registerOutParameter(4,Types.VARCHAR);
+                        stmt.execute();
+//                        BigInteger pubk=new BigInteger(stmt.getString(2));
+                        BigInteger prik=new BigInteger(stmt.getString(3));
+                        BigInteger modu=new BigInteger(stmt.getString(4));
+                        if(choice==1) {
+                            stmt = con.prepareCall("{call getInstaAccounts(?,?)}");
+                            stmt.setInt(1,logged_in_id);
+                            stmt.registerOutParameter(2,Types.REF_CURSOR);
+                            stmt.execute();
+                            ResultSet rs =  (ResultSet) stmt.getObject(2);
+                            String format = "%-40s%s%n";
+                            String Username="Username";
+                            String Password="Password";
+                            System.out.printf(format,Username,Password);
+                            System.out.println("--------------------------------------------------------------");
+                            while (rs.next()){
+                                String username = rs.getString(1);
+                                String encrypted = rs.getString(2);
+                                BigInteger intermediate = new BigInteger(encrypted);
+                                String finalpass = decrypt(intermediate,prik,modu);
+                                System.out.printf(format,username,finalpass);
+                            }
+                        }
+                        else if(choice==2) {
+                            stmt = con.prepareCall("{call getGmailAccounts(?,?)}");
+                            stmt.setInt(1,logged_in_id);
+                            stmt.registerOutParameter(2,Types.REF_CURSOR);
+                            stmt.execute();
+                            ResultSet rs =  (ResultSet) stmt.getObject(2);
+                            String format = "%-40s%s%n";
+                            String Username="Username";
+                            String Password="Password";
+                            System.out.printf(format,Username,Password);
+                            System.out.println("--------------------------------------------------------------");
+                            while (rs.next()){
+                                String username = rs.getString(1);
+                                String encrypted = rs.getString(2);
+                                BigInteger intermediate = new BigInteger(encrypted);
+                                String finalpass = decrypt(intermediate,prik,modu);
+                                System.out.printf(format,username,finalpass);
+                            }
+                        }
+                        else if(choice==3) {
+                            stmt = con.prepareCall("{call getGithubAccounts(?,?)}");
+                            stmt.setInt(1,logged_in_id);
+                            stmt.registerOutParameter(2,Types.REF_CURSOR);
+                            stmt.execute();
+                            ResultSet rs =  (ResultSet) stmt.getObject(2);
+                            String format = "%-40s%s%n";
+                            String Username="Username";
+                            String Password="Password";
+                            System.out.printf(format,Username,Password);
+                            System.out.println("--------------------------------------------------------------");
+                            while (rs.next()){
+                                String username = rs.getString(1);
+                                String encrypted = rs.getString(2);
+                                BigInteger intermediate = new BigInteger(encrypted);
+                                String finalpass = decrypt(intermediate,prik,modu);
+                                System.out.printf(format,username,finalpass);
+                            }
+                        }
+                        else{
+                            System.out.println("dumb");
+                        }
+                        System.out.println();
                     } else {
                         logged_in_id = -1;
                         continue;
@@ -368,7 +494,7 @@ public class Main {
     }
 }
 
-public class RSA {
+class RSA {
     private BigInteger P;
     private BigInteger Q;
     private BigInteger N;
