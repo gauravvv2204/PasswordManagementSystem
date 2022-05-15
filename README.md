@@ -35,6 +35,6 @@ You may download the latest version of both JavaMail API and JAF from the offici
 
 This Project was made by
 
-[Gaurav Pahwa](https://github.com/gauravvv2204) and [Kunal Demla](https://github.com/KunalDemla)
+[Gaurav Pahwa](https://www.linkedin.com/in/gaurav-pahwa-44698418b/) and [Kunal Demla](https://www.linkedin.com/in/kunal-demla-a85116b1/)
 
 _(For Final Database Management Project, 2021-22)_

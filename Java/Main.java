@@ -21,7 +21,7 @@ public class Main {
             int choice = -1;
             Class.forName("oracle.jdbc.driver.OracleDriver");
             Connection con = DriverManager.getConnection(
-                    "jdbc:oracle:thin:@172.16.64.222:1522/ORCLPDB", "CS2003087", "GAURAV");
+                    "", "", ""); // enter your url, user and password respectivly
             String salt = ""; // you can customize the salt as you wish but not after once you have created a
                               // new user.
             while (true) {

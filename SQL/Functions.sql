@@ -104,3 +104,16 @@ when invalid_pass then
 return -3;
 end;
 
+create or replace function delete_user(uid number,pass varchar2)
+return number
+as
+password master_table.m_password%type;
+begin
+select m_password into password from master_table where u_id = uid;
+if sha256.encrypt(pass) = password then
+delete from master_table where u_id = uid;
+return 1;
+else
+return -1;
+end if;
+end;
