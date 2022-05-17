@@ -2,7 +2,7 @@
 This is a Database Mangement System project for your Password Management in daily life.\
 We have implimented this using Java and PL/SQL.
 We have used RSA and SHA256 encryptions for the protection of all the passwords stored in our Database.
-Each seprate user gets their own RSA keys genrated at the time of profile creation.
+Each seprate user gets their own RSA keys generated at the time of profile creation.
 There are diffrent classes implimented for RSA and Table printings.
 All the user logs are stored in a diffrent `Logs` table and can be access by either the server directly or by an admin user (default set as u_id=1, shall be implimented in a better way in future).
 
