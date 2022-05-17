@@ -1,7 +1,7 @@
 
 create table Master_table(
 U_ID Number(10)  constraint mt_uid_pk primary key ,
-Email varchar2(30) constraint mt_email_unq unique constraint mt_email_nn not null,
+Email varchar2(50) constraint mt_email_unq unique constraint mt_email_nn not null,
 M_Password varchar2(40) constraint mt_pwd_nn not null);
 
 create table user_details(u_id number(10) constraint ud_uid_pk primary key constraint ud_uid_fk references master_table(u_id) on delete cascade,
@@ -36,3 +36,8 @@ constraint gmail_pk primary key(u_id,username));
 create table Github(u_id number(10) constraint github_uid_fk references master_table(u_id) on delete cascade,
 username varchar2(50),password varchar2(2000), 
 constraint github_pk primary key(u_id,username));
+
+create table Logs(log_id number(10) constraint log_id_pk primary key,
+u_id number(10),
+action_category varchar(50),
+log_time timestamp);

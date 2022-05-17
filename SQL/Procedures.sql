@@ -123,3 +123,41 @@ begin
 open out_cursor_instagram 
 for select username,password from instagram where u_id = uid;
 end;
+
+create or replace procedure logout_user(uid number)
+as
+begin
+insert into logs values(LOG_TABLE_SEQ.NEXTVAL,uid,'User LogOut',CURRENT_TIMESTAMP);
+end;
+
+create or replace procedure out_logs(n in number,out_cursor_out_logs out sys_refcursor)
+as
+begin
+open out_cursor_out_logs 
+for select * from logs order by log_id desc fetch first n rows  only;
+end;
+
+create or replace procedure search_by_uid(uid in number,out_cursor_out_logs out sys_refcursor)
+as
+begin
+open out_cursor_out_logs 
+for select * from logs where u_id = uid order by log_id desc fetch first 10 rows  only;
+end;
+
+create or replace procedure delete_github(uid in number, user_n in varchar2)
+as 
+begin
+delete from github where u_id=uid and username=user_n;
+end;
+
+create or replace procedure delete_gmail(uid in number, user_n in varchar2)
+as 
+begin
+delete from gmail where u_id=uid and username=user_n;
+end;
+
+create or replace procedure delete_insta(uid in number, user_n in varchar2)
+as 
+begin
+delete from instagram where u_id=uid and username=user_n;
+end;

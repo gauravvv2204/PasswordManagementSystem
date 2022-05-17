@@ -50,6 +50,7 @@ as
 id master_table.u_id%type;
 begin
 select u_id into id from master_table where email  = lower(entered_Email) and m_password = sha256.encrypt(entered_Password);
+insert into logs values(LOG_TABLE_SEQ.NEXTVAL,id,'User LogIn',CURRENT_TIMESTAMP);
 return id;
 exception
 when no_data_found then

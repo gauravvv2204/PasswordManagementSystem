@@ -180,10 +180,12 @@ public class Main {
                     System.out.println("Please choose a option:");
                     System.out.println("0. Show Profile");
                     System.out.println("1. Update Profile Settings.");
-                    System.out.println("2. Add/Update Password");
+                    System.out.println("2. Add/Update/Delete Passwords");
                     System.out.println("3. Show Passwords");
                     System.out.println("4. Delete your account");
                     System.out.println("5. Logout");
+                    if (logged_in_id == 1)
+                        System.out.println("6. Access Log Table");
                     choice = read.nextInt();
                     if (choice == 0) {
                         Statement stmt = con.createStatement();
@@ -294,48 +296,82 @@ public class Main {
                             }
                         }
                     } else if (choice == 2) {
-                        System.out.println("What platform do you want to add?");
-                        System.out.println("1. Instagram");
-                        System.out.println("2. Gmail");
-                        System.out.println("3. Github");
+                        System.out.println("Do you want to:");
+                        System.out.println("1. Add/Update");
+                        System.out.println("2. Delete");
                         choice = read.nextInt();
-                        System.out.println("Please enter your username");
-                        String username = read.nextLine();
-                        System.out.println("Please enter your password");
-                        String password = read.nextLine();
-                        CallableStatement stmt = con.prepareCall("{call get_rsa_keys(?,?,?,?)}");
-                        stmt.setInt(1, logged_in_id);
-                        stmt.registerOutParameter(2, Types.VARCHAR);
-                        stmt.registerOutParameter(3, Types.VARCHAR);
-                        stmt.registerOutParameter(4, Types.VARCHAR);
-                        stmt.execute();
-                        BigInteger pubk = new BigInteger(stmt.getString(2));
-                        BigInteger modu = new BigInteger(stmt.getString(4));
-                        BigInteger encryptedpassword = encrypt(password, pubk, modu);
                         if (choice == 1) {
-                            stmt = con.prepareCall("{call insert_insta(?,?,?)}");
+                            System.out.println("What platform do you want to add?");
+                            System.out.println("1. Instagram");
+                            System.out.println("2. Gmail");
+                            System.out.println("3. Github");
+                            choice = read.nextInt();
+                            System.out.println("Please enter your username");
+                            String username = read.nextLine();
+                            System.out.println("Please enter your password");
+                            String password = read.nextLine();
+                            CallableStatement stmt = con.prepareCall("{call get_rsa_keys(?,?,?,?)}");
                             stmt.setInt(1, logged_in_id);
-                            stmt.setString(2, username);
-                            stmt.setString(3, encryptedpassword.toString());
+                            stmt.registerOutParameter(2, Types.VARCHAR);
+                            stmt.registerOutParameter(3, Types.VARCHAR);
+                            stmt.registerOutParameter(4, Types.VARCHAR);
                             stmt.execute();
+                            BigInteger pubk = new BigInteger(stmt.getString(2));
+                            BigInteger modu = new BigInteger(stmt.getString(4));
+                            BigInteger encryptedpassword = encrypt(password, pubk, modu);
+                            if (choice == 1) {
+                                stmt = con.prepareCall("{call insert_insta(?,?,?)}");
+                                stmt.setInt(1, logged_in_id);
+                                stmt.setString(2, username);
+                                stmt.setString(3, encryptedpassword.toString());
+                                stmt.execute();
+                            } else if (choice == 2) {
+                                stmt = con.prepareCall("{call insert_gmail(?,?,?)}");
+                                stmt.setInt(1, logged_in_id);
+                                stmt.setString(2, username);
+                                stmt.setString(3, encryptedpassword.toString());
+                                stmt.execute();
+                            } else if (choice == 3) {
+                                stmt = con.prepareCall("{call insert_github(?,?,?)}");
+                                stmt.setInt(1, logged_in_id);
+                                stmt.setString(2, username);
+                                stmt.setString(3, encryptedpassword.toString());
+                                stmt.execute();
+                            } else {
+                                System.out.println("Dumb");
+                            }
+                            if (choice < 4 && choice > 0)
+                                System.out.println("Update Success!");
                         } else if (choice == 2) {
-                            stmt = con.prepareCall("{call insert_gmail(?,?,?)}");
-                            stmt.setInt(1, logged_in_id);
-                            stmt.setString(2, username);
-                            stmt.setString(3, encryptedpassword.toString());
-                            stmt.execute();
-                        } else if (choice == 3) {
-                            stmt = con.prepareCall("{call insert_github(?,?,?)}");
-                            stmt.setInt(1, logged_in_id);
-                            stmt.setString(2, username);
-                            stmt.setString(3, encryptedpassword.toString());
-                            stmt.execute();
-                        } else {
-                            System.out.println("Dumb");
+                            System.out.println("What platform do you want to delete?");
+                            System.out.println("1. Instagram");
+                            System.out.println("2. Gmail");
+                            System.out.println("3. Github");
+                            choice = read.nextInt();
+                            System.out.println("Please enter your username");
+                            String username = read.nextLine();
+                            CallableStatement stmt;
+                            if (choice == 1) {
+                                stmt = con.prepareCall("{call delete_insta(?,?)}");
+                                stmt.setInt(1, logged_in_id);
+                                stmt.setString(2, username);
+                                stmt.execute();
+                            } else if (choice == 2) {
+                                stmt = con.prepareCall("{call delete_gmail(?,?)}");
+                                stmt.setInt(1, logged_in_id);
+                                stmt.setString(2, username);
+                                stmt.execute();
+                            } else if (choice == 3) {
+                                stmt = con.prepareCall("{call delete_github(?,?)}");
+                                stmt.setInt(1, logged_in_id);
+                                stmt.setString(2, username);
+                                stmt.execute();
+                            } else {
+                                System.out.println("Dumb");
+                            }
+                            if (choice < 4 && choice > 0)
+                                System.out.println("Delete Success!");
                         }
-                        if (choice < 4 && choice > 0)
-                            System.out.println("Update Success!");
-
                     } else if (choice == 3) {
                         System.out.println("Which platform's accounts do you want to see?");
                         System.out.println("1. Instagram");
@@ -425,7 +461,39 @@ public class Main {
                         } else {
                             System.out.println("Password incorrect, Account Delete request Terminated.");
                         }
+                    } else if (choice == 6 && logged_in_id == 1) {
+                        System.out.println("Warning! You are accessing Admin permisions.");
+                        System.out.println("What would you like to do in log table?");
+                        System.out.println("1. Most recent N");
+                        System.out.println("2. Search by U_ID.");
+                        choice = read.nextInt();
+                        if (choice == 1) {
+                            int N;
+                            System.out.println("Input N");
+                            N = read.nextInt();
+                            CallableStatement stmt = con.prepareCall("{call out_logs(?,?)}");
+                            stmt.setInt(1, N);
+                            stmt.registerOutParameter(2, Types.REF_CURSOR);
+                            stmt.execute();
+                            System.out.println("Displaying the most recent " + N + " Logs");
+                            DBTablePrinter.printResultSet((ResultSet) stmt.getObject(2));
+                        } else if (choice == 2) {
+                            int uid;
+                            System.out.println("Input U_ID to be searched");
+                            uid = read.nextInt();
+                            CallableStatement stmt = con.prepareCall("{call search_by_uid(?,?)}");
+                            stmt.setInt(1, uid);
+                            stmt.registerOutParameter(2, Types.REF_CURSOR);
+                            stmt.execute();
+                            System.out.println("Displaying the most recent 10 Logs associated with U_ID: " + uid);
+                            DBTablePrinter.printResultSet((ResultSet) stmt.getObject(2));
+                        } else {
+                            System.out.println("Dumb");
+                        }
                     } else {
+                        CallableStatement stmt = con.prepareCall("{call logout_user(?)}");
+                        stmt.setInt(1, logged_in_id);
+                        stmt.execute();
                         logged_in_id = -1;
                         continue;
                     }
