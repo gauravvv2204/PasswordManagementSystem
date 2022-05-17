@@ -48,6 +48,9 @@ begin
 if not password_check(new_password) then
 raise invalid_password;
 end if;
+if sha256.encrypt(new_password)=m_password then
+raise invalid_password;
+end if;
 update master_table set m_password = sha256.encrypt(new_password) where email=given_email;
 out_result:='TRUE';
 exception

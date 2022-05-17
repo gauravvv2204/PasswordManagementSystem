@@ -158,7 +158,7 @@ public class Main {
                                     String result1 = stmt.getString(3);
                                     if (result1.equals("FALSE")) {
                                         System.out.println(
-                                                "Password should consist of alphabets,numbers,special charaters and should have a length greater than or equal to 8");
+                                                "Password should consist of alphabets,numbers,special charaters and should have a length greater than or equal to 8\nand should not be same as the old password");
                                         continue;
                                     } else {
                                         System.out.println("Password Updated");
