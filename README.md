@@ -3,8 +3,8 @@ This is a Database Mangement System project for your Password Management in dail
 We have implimented this using Java and PL/SQL.
 We have used RSA and SHA256 encryptions for the protection of all the passwords stored in our Database.
 Each seprate user gets their own RSA keys generated at the time of profile creation.
-There are diffrent classes implimented for RSA and Table printings.
-All the user logs are stored in a diffrent `Logs` table and can be access by either the server directly or by an _admin user_. (default set as `u_id = 1`, shall be implimented in a better way in future.)
+There are different classes implimented for RSA and Table printings.
+All the user logs are stored in a different `Logs` table and can be access by either the server directly or by an _admin user_. (default set as `u_id = 1`, shall be implimented in a better way in future.)
 
 ## Usage
 Execute all files in `SQL` folder on the SQL Developer Server.
@@ -39,6 +39,10 @@ You may download the latest version of both JavaMail API and JAF from the offici
 * Add `Admin:bool` column to `master_table`.
 * Add Email verification on Create user.
 * Forgot Password OTP expiration.
+* Provide two-factor authentication.
+* Provide Strong Password Generator
+* Set up a way to add any type of account credentials.
+* Store Private key on user's end.
 ---
 
 This Project was made by 
