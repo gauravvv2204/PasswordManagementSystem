@@ -44,11 +44,13 @@ end;
 
 create or replace procedure update_mpassword(given_email varchar,new_password varchar,out_result out varchar) as
 invalid_password exception;
+getpassword master_table.m_password%type;
 begin
 if not password_check(new_password) then
 raise invalid_password;
 end if;
-if sha256.encrypt(new_password)=m_password then
+select m_password into getpassword from master_table where email = given_email;
+if sha256.encrypt(new_password)=getpassword then
 raise invalid_password;
 end if;
 update master_table set m_password = sha256.encrypt(new_password) where email=given_email;
