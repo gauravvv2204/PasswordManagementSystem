@@ -39,6 +39,7 @@ You may download the latest version of both JavaMail API and JAF from the offici
 * Add `Admin:bool` column to `master_table`.
 * Add Email verification on Create user.
 * Forgot Password OTP expiration.
+* Abort command feature
 * Provide two-factor authentication.
 * Provide Strong Password Generator
 * Set up a way to add any type of account credentials.
